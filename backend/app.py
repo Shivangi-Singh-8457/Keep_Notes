@@ -11,15 +11,15 @@ app = Flask(__name__)
 mail=Mail(app)
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'shivangi_52111104@nitkkr.ac.in'
-app.config['MAIL_PASSWORD'] = 'Jtai@8457'
+app.config['MAIL_USERNAME'] = 'email'
+app.config['MAIL_PASSWORD'] = 'password'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 app.config['CORS_HEADERS']='Content-Type'
 CORS(app, support_credentials=True)
 
-CONNECTION_STRING = "mongodb+srv://shivangi52111104:shivi%409485@c0.yx2mlig.mongodb.net/?retryWrites=true&w=majority"
+CONNECTION_STRING = "connect_url"
 client = MongoClient(CONNECTION_STRING)
 db=client['keep']
 users=db['users']
@@ -27,18 +27,11 @@ notes=db['notes']
 user=""
 isLogin=False
 # key = Fernet.generate_key()
-key=b'RyRyDkSsEd2eB_G4crJzUiD3QXPoyd_9F5POVJlERuo='
+key=""
 fernet = Fernet(key)
-# res=users.find()
-# for x in res:
-#   print(x)
-# @app.route('/')    
-# def home():  
-#    return "hello, this is our first flask website"
-
 def sendMail(otp):
    global user_email 
-   msg = Message('Hello', sender = 'shivangi_52111104@nitkkr.ac.in', recipients = [user_email])
+   msg = Message('Hello', sender = 'email', recipients = [user_email])
    msg.body = "This email is from Keep Notes.\nyour OTP is "+otp+"."
    mail.send(msg)
 
@@ -76,10 +69,6 @@ def register_otp():
       data['password'] = fernet.encrypt(data['password'].encode())
       del data['otp']
       users.insert_one(data)
-      # global isLogin
-      # global user
-      # isLogin=True
-      # user=data['email']
       return json.dumps("true")
    else:
       return json.dumps("false")
