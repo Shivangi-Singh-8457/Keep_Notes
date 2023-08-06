@@ -6,32 +6,32 @@ from pymongo import MongoClient
 from flask_mail import Mail, Message
 import random
 from cryptography.fernet import Fernet
+from decouple import config
 
 app = Flask(__name__)
 mail=Mail(app)
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'email'
-app.config['MAIL_PASSWORD'] = 'password'
+app.config['MAIL_USERNAME'] = config('EMAIL')
+app.config['MAIL_PASSWORD'] = config('PASSWORD')
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 app.config['CORS_HEADERS']='Content-Type'
 CORS(app, support_credentials=True)
 
-CONNECTION_STRING = "connect_url"
-client = MongoClient(CONNECTION_STRING)
+# CONNECTION_STRING = "connect_url"
+client = MongoClient(config('CONNECTION_STRING'))
 db=client['keep']
 users=db['users']
 notes=db['notes']
 user=""
 isLogin=False
-# key = Fernet.generate_key()
-key=""
-fernet = Fernet(key)
+
+fernet = Fernet( eval(config('KEY')))
 def sendMail(otp):
    global user_email 
-   msg = Message('Hello', sender = 'email', recipients = [user_email])
+   msg = Message('Hello', sender = config('EMAIL'), recipients = [user_email])
    msg.body = "This email is from Keep Notes.\nyour OTP is "+otp+"."
    mail.send(msg)
 
